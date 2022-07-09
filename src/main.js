@@ -16,11 +16,16 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import { hasBtnPermission } from './utils/permission' // button permission
 
-Vue.use(ElementUI, { locale })
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
+import VueApexCharts from 'vue-apexcharts'
 
+Vue.use(ElementUI, { locale })
+Vue.use(Antd)
 Vue.config.productionTip = false
 Vue.prototype.hasPerm = hasBtnPermission
-
+Vue.use(VueApexCharts)
+Vue.component('apexchart', VueApexCharts)
 new Vue({
   el: '#app',
   router,

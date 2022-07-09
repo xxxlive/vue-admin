@@ -264,7 +264,7 @@ export default {
       this.$refs.menu.validate(valid => {
         if (valid) {
           if (!this.menu.id) { // 添加
-            if (this.menu.pid == 0) {
+            if (this.menu.pid === 0) {
               this.appendLevelOne() // 一级分类的添加
             } else {
               this.appendLevelTwo() // 二级分类的添加

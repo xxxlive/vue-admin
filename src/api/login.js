@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // 登录
 export function login(username, password) {
- // debugger
+  // debugger
   return request({
     url: '/admin/acl/login',
     method: 'post',
@@ -15,6 +15,7 @@ export function login(username, password) {
 
 // 获取用户信息
 export function getInfo(token) {
+  console.log(token)
   return request({
     url: '/admin/acl/index/info',
     method: 'get',
@@ -24,7 +25,7 @@ export function getInfo(token) {
 
 // 登出
 export function logout() {
-  //debugger
+  // debugger
   return request({
     url: '/admin/acl/index/logout',
     method: 'post'
