@@ -5,7 +5,7 @@ export default {
   // 获取小节
   getVideo(id) {
     return request({
-      url: '/eduservice/video/getVideoInfo/${id}',
+      url: '/eduservice/video/getVideoInfo/' + id,
       method: 'get'
     })
   },

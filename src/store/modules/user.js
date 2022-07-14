@@ -8,7 +8,8 @@ const user = {
     avatar: '',
     buttons: [],
     roles: [],
-    teacherId: ''
+    teacherId: '',
+    nickName: ''
   },
 
   mutations: {
@@ -29,6 +30,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_NICKNAME: (state, nickname) => {
+      state.nickName = nickname
     }
   },
 
@@ -69,6 +73,7 @@ const user = {
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_TEACHERID', data.teacherId)
+          commit('SET_NICKNAME', data.nickName)
           commit('SET_BUTTONS', buttonAuthList)
           resolve(response)
         }).catch(error => {

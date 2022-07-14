@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
-import ElementUI from 'element-ui'
+import ElementUI, { Message, MessageBox } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
@@ -26,6 +26,8 @@ Vue.config.productionTip = false
 Vue.prototype.hasPerm = hasBtnPermission
 Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
+Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
 new Vue({
   el: '#app',
   router,

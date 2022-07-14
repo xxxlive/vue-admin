@@ -102,7 +102,8 @@
           <el-button size="small" type="primary">上传课程资料</el-button>
           <el-tooltip placement="right-end">
             <div slot="content">最大支持1G，<br>
-              支持zip、rar和7z压缩文件格式上传</div>
+              支持zip、rar和7z压缩文件格式上传
+            </div>
             <i class="el-icon-question"/>
           </el-tooltip>
 
@@ -110,7 +111,8 @@
       </el-form-item>
 
       <el-form-item label="课程价格">
-        <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/> 元
+        <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/>
+        元
       </el-form-item>
 
       <el-form-item>
@@ -290,7 +292,7 @@ export default {
         // 添加
         this.addCourse()
       } else {
-       
+
         this.updateCourse()
       }
     }

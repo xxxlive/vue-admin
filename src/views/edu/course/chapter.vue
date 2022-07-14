@@ -36,7 +36,7 @@
 
               <span class="acts">
 
-                <el-button style="" type="text" @click="openUpdateVideo(video.id)" >编辑</el-button>
+                <el-button style="" type="text" @click="openUpdateVideo(video.id)">编辑</el-button>
                 <el-button type="text" @click="removeVideo(video.id)">删除</el-button>
               </span>
             </p>
@@ -102,7 +102,8 @@
                 支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
                 GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>
                 MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、<br>
-                SWF、TS、VOB、WMV、WEBM 等视频格式上传</div>
+                SWF、TS、VOB、WMV、WEBM 等视频格式上传
+              </div>
               <i class="el-icon-question"/>
             </el-tooltip>
           </el-upload>
@@ -180,6 +181,7 @@ export default {
     },
     // 上传视频成功调用的方法
     handleVodUploadSuccess(response, file, fileList) {
+      console.log(response.data)
       // 上传视频id赋值
       this.video.videoSourceId = response.data.videoId
       // 上传视频名称赋值
@@ -300,6 +302,7 @@ export default {
     },
     // 修改小节弹框数据回显
     openEditVoide(voideId) {
+      console.log(voideId)
       // 弹框
       this.dialogVideoFormVisible = true
       // 调用接口
@@ -377,6 +380,7 @@ export default {
       chapter.getAllChapterVideo(this.courseId)
         .then(response => {
           this.chapterVideoList = response.data.allChapterVideo
+          console.log(this.chapterVideoList)
         })
     },
     previous() {
@@ -390,16 +394,18 @@ export default {
 }
 </script>
 <style scoped>
-.chanpterList{
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.chanpterList {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.chanpterList li{
+
+.chanpterList li {
   position: relative;
 }
-.chanpterList p{
+
+.chanpterList p {
   float: left;
   font-size: 20px;
   margin: 10px 0;
@@ -409,15 +415,17 @@ export default {
   width: 100%;
   border: 1px solid #DDD;
 }
+
 .chanpterList .acts {
-    float: right;
-    font-size: 14px;
+  float: right;
+  font-size: 14px;
 }
 
-.videoList{
+.videoList {
   padding-left: 50px;
 }
-.videoList p{
+
+.videoList p {
   float: left;
   font-size: 14px;
   margin: 10px 0;
