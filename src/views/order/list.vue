@@ -4,7 +4,7 @@
     <!--查询表单-->
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item>
-        <el-input v-model="searchObj.username" placeholder="用户名"/>
+        <el-input v-model="searchObj.courseTitle" placeholder="课程名称"/>
       </el-form-item>
       <el-button type="primary" icon="el-icon-search" @click="fetchData()">查询</el-button>
       <el-button type="default" @click="resetData()">清空</el-button>
@@ -16,10 +16,6 @@
       stripe
       style="width: 100%"
       @selection-change="handleSelectionChange">
-
-      <el-table-column
-        type="selection"
-        width="55"/>
 
       <el-table-column
         label="序号"
@@ -95,19 +91,18 @@ export default {
 
     // 加载讲师列表数据
     fetchData(page = 1) {
-      console.log('翻页。。。' + page)
-      // 异步获取远程数据（ajax）
       this.page = page
-
-      order.getOrderList(this.page, this.limit).then(
+      // 异步获取远程数据（ajax）
+      order.getOrderList(this.page, this.limit, this.searchObj).then(
         response => {
           this.list = response.data.items
           this.total = response.data.total
-          console.log(this.list)
           // 数据加载并绑定成功
           this.listLoading = false
+          console.log(response)
         }
       )
+
     },
 
     // 重置查询表单
@@ -117,79 +112,11 @@ export default {
       this.fetchData()
     },
 
-    // 根据id删除数据
-    removeDataById(id) {
-      // debugger
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => { // promise
-        // 点击确定，远程调用ajax
-        return user.removeById(id)
-      }).then((response) => {
-        this.fetchData(this.page)
-        if (response.success) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        }
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-    },
-
     // 当表格复选框选项发生变化的时候触发
     handleSelectionChange(selection) {
       console.log('handleSelectionChange......')
       console.log(selection)
       this.multipleSelection = selection
-    },
-
-    // 批量删除
-    removeRows() {
-      console.log('removeRows......')
-
-      if (this.multipleSelection.length === 0) {
-        this.$message({
-          type: 'warning',
-          message: '请选择要删除的记录!'
-        })
-        return
-      }
-
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => { // promise
-        // 点击确定，远程调用ajax
-        // 遍历selection，将id取出放入id列表
-        var idList = []
-        this.multipleSelection.forEach(item => {
-          idList.push(item.id)
-          // console.log(idList)
-        })
-        // 调用api
-        return user.removeRows(idList)
-      }).then((response) => {
-        this.fetchData(this.page)
-        if (response.success) {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        }
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
     },
 
     // 执行搜索
