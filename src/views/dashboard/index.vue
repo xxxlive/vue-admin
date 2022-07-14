@@ -48,8 +48,64 @@
       </a-card>
     </a-row>
 
-  </div>
-</template>
+    <div class="weather-area">
+      <div class="weather-info">
+        <a-card :loading="loading" :title="weather.countyName + ' 当前天气'">
+          <a-row>
+            <a-col :span="8"><p>天气：{{ weather.realtime.weather }}</p></a-col>
+            <a-col :span="8"><p>风向：{{ weather.realtime.wD }}</p></a-col>
+            <a-col :span="8"><p>风力大小：{{ weather.realtime.wS }}</p></a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="8"><p>温度：{{ weather.realtime.temp }}℃</p></a-col>
+            <a-col :span="8"><p>体感温度：{{ weather.realtime.sendibleTemp }}℃</p></a-col>
+            <a-col :span="8"><p>空气湿度：{{ weather.realtime.sD }}%</p></a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="8"><p>更新时间：{{ weather.realtime.time }}</p></a-col>
+          </a-row>
+        </a-card>
+      </div>
+      <div class="weather-info">
+        <a-card :loading="loading" :title="weather.countyName + ' 未来天气'">
+          <a-row>
+            <a-col v-for="(w, index) in weather.weathers" :span="24" :key="index">
+              <template v-if="index !== 6">
+                <p>{{ w.date }}【{{ w.week }}】：日出时间 --- {{ w.sun_rise_time }} 日落时间 --- {{ w.sun_down_time }} 天气 ---
+                  {{ w.weather }}</p>
+              </template>
+            </a-col>
+          </a-row>
+        </a-card>
+      </div>
+      <div class="weather-info">
+        <a-card :loading="loading" :title="weather.countyName + ' 生活指数'">
+          <a-row>
+            <a-col v-for="(i, index) in weather.indexes" :span="24" :key="index">
+              <p>{{ i.name }} --- {{ i.content }}</p>
+            </a-col>
+          </a-row>
+        </a-card>
+      </div>
+      <div v-if="weather.alarms.length" class="weather-info">
+        <a-card :loading="loading" :title="weather.countyName + ' 预警信息'">
+          <a-col :span="24">
+            <p>预警标题 --- {{ weather.alarms[0].alarmDesc }}</p>
+            <p>预警类型 --- {{ weather.alarms[0].alarmTypeDesc }}</p>
+            <p>预警等级 --- {{ weather.alarms[0].alarmLevelNoDesc }}</p>
+            <p>发布时间 --- {{ weather.alarms[0].publishTime }}</p>
+            <p>预防措施 --- {{ weather.alarms[0].precaution }}</p>
+            <a-popover title="预警详情">
+              <template slot="content">
+                <div style="max-width: 360px">{{ weather.alarms[0].alarmContent }}</div>
+              </template>
+              <p>预警详情 --- {{ weather.alarms[0].alarmContent }}</p>
+            </a-popover>
+          </a-col>
+        </a-card>
+      </div>
+    </div>
+</div></template>
 
 <script>
 import { mapGetters } from 'vuex'
@@ -193,6 +249,7 @@ export default {
             publishTime: ''
           }
           this.loading = false
+          console.log(data)
           this.weather.provinceName = data.value[0].provinceName
           this.weather.countyName = data.value[0].city
           this.weather.weathers = data.value[0].weathers
@@ -274,7 +331,6 @@ export default {
         console.error(r)
         this.$message.error('天气查询失败')
       })
-
     }
   }
 }
