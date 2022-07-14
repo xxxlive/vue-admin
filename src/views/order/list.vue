@@ -1,71 +1,34 @@
 <template>
   <div class="app-container">
-    私信列表
-
+    <!-- 查询表单 -->
     <!--查询表单-->
     <el-form :inline="true" class="demo-form-inline">
-      <!-- 课程讲师 -->
-      <el-form-item label="教师">
-        <el-select
-          v-model="commentQuery.teacherId"
-          placeholder="请选择">
-
-          <el-option
-            v-for="teacher in teacherList"
-            :key="teacher.id"
-            :label="teacher.name"
-            :value="teacher.id"/>
-        </el-select>
-      </el-form-item>
-      <!-- 课程 -->
-      <el-form-item label="课程">
-        <el-select
-          v-model="commentQuery.courseId"
-          placeholder="请选择">
-
-          <el-option
-            v-for="course in courseList"
-            :key="course.id"
-            :label="course.title"
-            :value="course.id"/>
-        </el-select>
-      </el-form-item>
       <el-form-item>
-        <el-select v-model="commentQuery.status" clearable placeholder="回复状态">
-          <el-option value="1" label="已回复"/>
-          <el-option value="0" label="未回复"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="发送时间">
-        <el-date-picker
-          v-model="commentQuery.begin"
-          type="datetime"
-          placeholder="选择开始时间"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          default-time="00:00:00"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-date-picker
-          v-model="commentQuery.end"
-          type="datetime"
-          placeholder="选择截止时间"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          default-time="00:00:00"
-        />
+        <el-input v-model="searchObj.username" placeholder="用户名"/>
       </el-form-item>
 
-      <el-button type="primary" icon="el-icon-search" @click="getList()">查询</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="fetchData()">查询</el-button>
       <el-button type="default" @click="resetData()">清空</el-button>
     </el-form>
 
-    <!-- 表格 -->
+    <!-- 工具条 -->
+    <div>
+      <el-button v-if="hasPerm('user.add')" type="danger" size="mini" @click="addUser()">添加</el-button>
+      <el-button v-if="hasPerm('user.remove')" type="danger" size="mini" @click="removeRows()">批量删除</el-button>
+
+    </div>
+
+    <!-- 讲师列表 -->
     <el-table
       v-loading="listLoading"
       :data="list"
-      border
-      fit
-      highlight-current-row>
+      stripe
+      style="width: 100%"
+      @selection-change="handleSelectionChange">
+
+      <el-table-column
+        type="selection"
+        width="55"/>
 
       <el-table-column
         label="序号"
@@ -75,349 +38,182 @@
           {{ (page - 1) * limit + scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="用户头像" width="90">
+      <el-table-column prop="courseTitle" label="课程名称" width="150"/>
+      <el-table-column label="课程封面" width="90">
         <template slot-scope="scope">
-          <img :src="scope.row.avatar" width="80" height="80">
+          <img :src="scope.row.courseCover" width="80" height="80" alt="avatar">
         </template>
       </el-table-column>
-
-      <el-table-column prop="nickname" label="用户昵称" width="80" />
-
-      <el-table-column label="课程" width="200">
-        <template slot-scope="scope">
-          <el-select
-            v-model="scope.row.courseId"
-            placeholder="请选择"
-            disabled>
-            <el-option
-              v-for="course in courseList"
-              :key="course.id"
-              :label="course.title"
-              :value="course.id"/>
-          </el-select>
-
-        </template>
-      </el-table-column>
-      <el-table-column label="主讲教师" width="150">
-        <template slot-scope="scope">
-          <el-select
-            v-model="scope.row.teacherId"
-            placeholder="请选择"
-            disabled>
-            <el-option
-              v-for="teacher in teacherList"
-              :key="teacher.id"
-              :label="teacher.name"
-              :value="teacher.id"/>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column prop="content" label="私信内容"/>
-      <el-table-column label="回复状态" width="120">
-        <template slot-scope="scope">
-          <el-button v-if="scope.row.status===0" type="warning" size="medium">未回复</el-button>
-          <el-button v-if="scope.row.status===1" type="success" size="medium">已回复</el-button>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="gmtCreate" label="发送时间" width="160"/>
-
-      <el-table-column label="操作" width="100" align="center">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="openDialog(scope.row.id)">回复</el-button><br>
-          <el-button type="success" size="mini" icon="el-icon-edit" @click="openLookDialog(scope.row.id)">查看</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column prop="teacherName" label="老师姓名" width="150"/>
+      <el-table-column prop="totalFee" label="价格"/>
+      <el-table-column prop="nickname" label="学员"/>
+      <el-table-column prop="gmtCreate" label="购买时间" width="180"/>
     </el-table>
 
-    <!-- 回复私信表单 -->
-    <el-dialog :visible.sync="dialogChapterFormVisible" title="回复私信">
-      <el-form :model="comment" label-width="120px">
-        <el-form-item label="回复:">
-          {{ comment.nickname }}
-        </el-form-item>
-        <el-form-item label="原文:">
-          {{ comment.content }}
-        </el-form-item>
-        <el-form-item label="回复内容：">
-          <div>
-            <el-input v-model="commentHF.content" rows="5" type="textarea" maxlength="500" placeholder="输入回复内容(在500字以内)..."/>
-          </div>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogChapterFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="hfPrivateComment()">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 查看私信表单 -->
-    <el-dialog :visible.sync="dialogLookFormVisible" title="查看私信回复" width="100%" @close="closeLookDialog">
-      <!-- 表格 -->
-      <el-table
-        v-loading="listLoading"
-        :data="childList"
-        border
-        fit
-        highlight-current-row>
-
-        <el-table-column
-          label="序号"
-          width="70"
-          align="center">
-          <template slot-scope="scope">
-            {{ (page - 1) * limit + scope.$index + 1 }}
-          </template>
-        </el-table-column>
-        <el-table-column label="用户头像" width="90">
-          <template slot-scope="scope">
-            <img :src="scope.row.avatar" width="80" height="80">
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="nickname" label="用户昵称" width="80" />
-
-        <el-table-column label="课程" width="200">
-          <template slot-scope="scope">
-            <el-select
-              v-model="scope.row.courseId"
-              placeholder="请选择"
-              disabled>
-              <el-option
-                v-for="course in courseList"
-                :key="course.id"
-                :label="course.title"
-                :value="course.id"/>
-            </el-select>
-
-          </template>
-        </el-table-column>
-        <el-table-column label="主讲教师" width="150">
-          <template slot-scope="scope">
-            <el-select
-              v-model="scope.row.teacherId"
-              placeholder="请选择"
-              disabled>
-              <el-option
-                v-for="teacher in teacherList"
-                :key="teacher.id"
-                :label="teacher.name"
-                :value="teacher.id"/>
-            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column prop="content" label="私信内容"/>
-        <el-table-column label="回复状态" width="120">
-          <template slot-scope="scope">
-            <el-button v-if="scope.row.status===0" type="warning" size="medium">未回复</el-button>
-            <el-button v-if="scope.row.status===1" type="success" size="medium">已回复</el-button>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="gmtCreate" label="发送时间" width="160"/>
-
-        <el-table-column label="操作" width="100" align="center">
-          <template slot-scope="scope">
-            <el-button v-if="scope.row.status===1" type="primary" size="mini" icon="el-icon-edit" @click="openDialog(scope.row.id)">回复</el-button><br>
-            <el-button type="success" size="mini" icon="el-icon-edit" @click="openLookDialog(scope.row.id)">查看</el-button><br>
-            <el-button v-if="scope.row.status===0" type="danger" size="mini" icon="el-icon-edit" @click="removeDataById(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogLookFormVisible = false,commentId=''">关 闭</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 分页 -->
+    <!-- 分页组件 -->
     <el-pagination
       :current-page="page"
-      :page-size="limit"
       :total="total"
+      :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
       style="padding: 30px 0; text-align: center;"
-      layout="total, prev, pager, next, jumper"
-      @current-change="getList"
+      layout="sizes, prev, pager, next, jumper, ->, total, slot"
+      @current-change="fetchData"
+      @size-change="changeSize"
     />
-
   </div>
 </template>
+
 <script>
-// 引入调用teacher.js文件
-import comment from '@/api/edu/comment'
+import order from '../../api/acl/order'
+
 export default {
-  data() { // 定义变量和初始值
+  data() {
     return {
-      teacherId: this.$store.state.user.teacherId,
       listLoading: true, // 数据是否正在加载
-      list: null, // 查询之后接口返回集合
-      page: 1, // 当前页
+      list: [], // 讲师列表
+      total: 0, // 数据库中的总记录数
+      page: 1, // 默认页码
       limit: 10, // 每页记录数
-      total: 0, // 总记录数
-      commentQuery: {}, // 条件封装对象
-      teacherList: [], // 封装所有的讲师
-      courseList: [], // 封装所有的课程
-      dialogChapterFormVisible: false, // 回复弹框
-      comment: {},
-      commentHF: {},
-      treeList: null,
-      treeListLoading: true,
-      dialogLookFormVisible: false,
-      childList: null,
-      commentId: '',
-      updateComment: ''
+      searchObj: {}, // 查询表单对象
+      multipleSelection: [] // 批量选择中选择的记录列表
     }
   },
-  created() { // 页面渲染之前执行，一般调用methods定义的方法
-    // 调用
-    // 初始化所有讲师
-    this.getListTeacher()
-    this.getListCourse()
-    this.getList()
-    this.getTreeList()
+
+  // 生命周期函数：内存准备完毕，页面尚未渲染
+  created() {
+    this.fetchData()
   },
-  methods: { // 创建具体的方法，调用teacher.js定义的方法
-    // 讲师列表的方法
-    getList(page = 1) {
+
+  // 生命周期函数：内存准备完毕，页面渲染成功
+  mounted() {
+  },
+
+  methods: {
+
+    // 当页码发生改变的时候
+    changeSize(size) {
+      console.log(size)
+      this.limit = size
+      this.fetchData(1)
+    },
+
+    addUser() {
+      this.$router.push({ path: '/acl/user/add' })
+    },
+
+    // 加载讲师列表数据
+    fetchData(page = 1) {
+      console.log('翻页。。。' + page)
+      // 异步获取远程数据（ajax）
       this.page = page
-      this.commentQuery.teacherId = this.teacherId
-      comment.getCommentListPage(this.page, this.limit, this.commentQuery)
-        .then(response => { // 请求成功
-          // response接口返回的数据
-          // console.log(response)
-          this.list = response.data.rows
+
+      order.getOrderList(this.page, this.limit).then(
+        response => {
+          this.list = response.data.items
           this.total = response.data.total
+          console.log(this.list)
           // 数据加载并绑定成功
           this.listLoading = false
-          console.log(this.list)
-          console.log(this.total)
-        })
+        }
+      )
     },
-    getTreeList(page = 1) {
-      this.page = page
-      comment.getAllCommentListPage(this.page, this.limit, this.commentQuery)
-        .then(response => { // 请求成功
-          // response接口返回的数据
-          // console.log(response)
-          this.treeList = response.data.rows
-          this.treeList.push(this.defaultProps)
-          // this.total = response.data.total
-          // 数据加载并绑定成功
-          this.treeListLoading = false
-          console.log(this.treeList)
-          // console.log(this.total)
-        })
+
+    // 重置查询表单
+    resetData() {
+      console.log('重置查询表单')
+      this.searchObj = {}
+      this.fetchData()
     },
-    // 查询所有的课程
-    getListCourse() {
-      comment.getListCourse()
-        .then(response => {
-          this.courseList = response.data.list
-        })
-    },
-    // 查询所有的讲师
-    getListTeacher() {
-      comment.getListTeacher()
-        .then(response => {
-          this.teacherList = response.data.items
-        })
-    },
-    // 回复数据回显
-    openDialog(commentId) {
-      // 弹框
-      this.dialogChapterFormVisible = true
-      // 调用接口
-      comment.getComment(commentId)
-        .then(response => {
-          this.comment = response.data.comment
-        })
-    },
-    // 查看数据回显
-    openLookDialog(commentId) {
-      this.commentId = commentId
-      // 弹框
-      this.dialogLookFormVisible = true
-      this.getChlidList(commentId)
-    },
-    getChlidList(commentId) {
-      // 调用接口
-      comment.getLookComment(commentId)
-        .then(response => {
-          this.childList = response.data.list
-        })
-    },
-    hfPrivateComment() {
-      // 包装回复数据
-      this.commentHF.courseId = this.comment.courseId
-      this.commentHF.teacherId = this.comment.teacherId
-      this.commentHF.nickname = this.$store.state.user.name
-      this.commentHF.avatar = this.$store.state.user.avatar
-      this.commentHF.pid = this.comment.id
-      this.commentHF.isPrivate = 1
-      // 调用接口
-      comment.hfPrivateComment(this.commentHF)
-        .then(response => { // 发表评论成功
-          // 提示信息
-          this.$message({
-            type: 'success',
-            message: '回复私信成功!'
-          })
-          // 刷新评论列表
-          this.getList()
-          this.comment = {}
-          this.commentHF = {}
-          // 弹框
-          this.dialogChapterFormVisible = false
-        })
-    },
-    resetData() { // 清空的方法
-      // 表单输入项数据清空
-      this.commentQuery = {}
-      // 查询所有讲师数据
-      this.getList()
-    },
-    // 删除方法
+
+    // 根据id删除数据
     removeDataById(id) {
-      this.$confirm('此操作将永久删除私信记录, 是否继续?', '提示', {
+      // debugger
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => { // 点击确定，执行then方法
-        // 调用删除的方法
-        comment.deleteCommentId(id)
-          .then(response => { // 删除成功
-            // 提示信息
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            // 刷新列表页面
-            this.getChlidList(this.commentId)
-          })
-      }) // 点击取消，执行catch方法
-    },
-    updateCommentStatue(commentId) {
-      this.updateComment.id = commentId
-      this.updateComment.status = 0
-      // 调用接口
-      comment.updateCommentInfo(this.updateComment)
-        .then(response => { // 更新成功
-          // 提示信息
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        return user.removeById(id)
+      }).then((response) => {
+        this.fetchData(this.page)
+        if (response.success) {
           this.$message({
             type: 'success',
-            message: '你已删除全部回复，当前私信状态变为未回复!'
+            message: '删除成功!'
           })
-          // 刷新评论列表
-          this.getList()
-          this.dialogLookFormVisible = false
-          this.commentId = ''
-          this.updateComment = ''
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
         })
+      })
     },
-    closeLookDialog() {
-      this.dialogLookFormVisible = false
-      this.commentId = ''
-    }
 
+    // 当表格复选框选项发生变化的时候触发
+    handleSelectionChange(selection) {
+      console.log('handleSelectionChange......')
+      console.log(selection)
+      this.multipleSelection = selection
+    },
+
+    // 批量删除
+    removeRows() {
+      console.log('removeRows......')
+
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要删除的记录!'
+        })
+        return
+      }
+
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        // 遍历selection，将id取出放入id列表
+        var idList = []
+        this.multipleSelection.forEach(item => {
+          idList.push(item.id)
+          // console.log(idList)
+        })
+        // 调用api
+        return user.removeRows(idList)
+      }).then((response) => {
+        this.fetchData(this.page)
+        if (response.success) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+
+    // 执行搜索
+    // queryString：文本框中输入的值
+    // cb：一个函数
+    querySearch(queryString, cb) {
+      console.log(queryString)
+      console.log(cb)
+
+      // teacher.selectNameByKey(queryString).then(response => {
+      //   // 调用 callback 返回建议列表的数据
+      //   cb(response.data.items)
+      // })
+    }
   }
 }
 </script>
+
