@@ -6,18 +6,9 @@
       <el-form-item>
         <el-input v-model="searchObj.username" placeholder="用户名"/>
       </el-form-item>
-
       <el-button type="primary" icon="el-icon-search" @click="fetchData()">查询</el-button>
       <el-button type="default" @click="resetData()">清空</el-button>
     </el-form>
-
-    <!-- 工具条 -->
-    <div>
-      <el-button v-if="hasPerm('user.add')" type="danger" size="mini" @click="addUser()">添加</el-button>
-      <el-button v-if="hasPerm('user.remove')" type="danger" size="mini" @click="removeRows()">批量删除</el-button>
-
-    </div>
-
     <!-- 讲师列表 -->
     <el-table
       v-loading="listLoading"
