@@ -17,6 +17,85 @@
             </div>
           </div>
         </a-col>
+        <a-col :span="12" class="project-wrapper">
+          <a-card title="进行中的项目" class="project-card">
+            <a slot="extra" href="https://github.com/xxxlive?tab=repositories" target="_blank">所有项目</a>
+            <table>
+              <tr>
+                <td>
+                  <div class="project-avatar-wrapper">
+                    <a-avatar class="project-avatar">{{ projects[0].avatar }}</a-avatar>
+                  </div>
+                  <div class="project-detail">
+                    <div class="project-name">
+                      {{ projects[0].name }}
+                    </div>
+                    <div class="project-desc">
+                      <p>{{ projects[0].des }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="project-avatar-wrapper">
+                    <a-avatar class="project-avatar">{{ projects[1].avatar }}</a-avatar>
+                  </div>
+                  <div class="project-detail">
+                    <div class="project-name">
+                      {{ projects[1].name }}
+                    </div>
+                    <div class="project-desc">
+                      <p>{{ projects[1].des }}</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="project-avatar-wrapper">
+                    <a-avatar class="project-avatar">{{ projects[2].avatar }}</a-avatar>
+                  </div>
+                  <div class="project-detail">
+                    <div class="project-name">
+                      {{ projects[2].name }}
+                    </div>
+                    <div class="project-desc">
+                      <p>{{ projects[2].des }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="project-avatar-wrapper">
+                    <a-avatar class="project-avatar">{{ projects[3].avatar }}</a-avatar>
+                  </div>
+                  <div class="project-detail">
+                    <div class="project-name">
+                      {{ projects[3].name }}
+                    </div>
+                    <div class="project-desc">
+                      <p>{{ projects[3].des }}</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="project-avatar-wrapper">
+                    <a-avatar class="project-avatar">{{ projects[4].avatar }}</a-avatar>
+                  </div>
+                  <div class="project-detail">
+                    <div class="project-name">
+                      {{ projects[4].name }}
+                    </div>
+                    <div class="project-desc">
+                      <p>{{ projects[4].des }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td/>
+              </tr>
+            </table>
+          </a-card>
+        </a-col>
       </a-card>
     </a-row>
     <a-row>
@@ -115,6 +194,33 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      projects: [
+        {
+          name: '东软猪肉订单',
+          des: '一定不能有寄生虫',
+          avatar: 'F'
+        },
+        {
+          name: '百度可乐订单',
+          des: '他们真的不喝百事可乐',
+          avatar: 'F'
+        },
+        {
+          name: '阿里巴巴面包订单',
+          des: '肉松面包',
+          avatar: 'S'
+        },
+        {
+          name: '腾讯老干妈订单',
+          des: '摊牌了是假的老干妈',
+          avatar: 'F'
+        },
+        {
+          name: '字节跳动冰淇淋订单',
+          des: '加班做',
+          avatar: 'F'
+        }
+      ],
       weather: {
         provinceName: '',
         countyName: '',
