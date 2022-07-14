@@ -184,7 +184,8 @@
         </a-card>
       </div>
     </div>
-</div></template>
+  </div>
+</template>
 
 <script>
 import { mapGetters } from 'vuex'
@@ -453,4 +454,132 @@ export default {
     line-height: 46px;
   }
 }
+</style>
+
+<style lang="scss">
+.home-page {
+  .head-info {
+    margin-bottom: .5rem;
+
+    .head-info-card {
+      padding: .5rem;
+      border-color: #f1f1f1;
+
+      .head-info-avatar {
+        display: inline-block;
+        float: left;
+        margin-right: 1rem;
+
+        img {
+          width: 5rem;
+          border-radius: 2px;
+        }
+      }
+
+      .head-info-count {
+        display: inline-block;
+        float: left;
+
+        .head-info-welcome {
+          font-size: 1.05rem;
+          margin-bottom: .1rem;
+        }
+
+        .head-info-desc {
+          color: rgba(0, 0, 0, 0.45);
+          font-size: .8rem;
+          padding: .2rem 0;
+
+          p {
+            margin-bottom: 0;
+          }
+        }
+
+        .head-info-time {
+          color: rgba(0, 0, 0, 0.45);
+          font-size: .8rem;
+          padding: .2rem 0;
+        }
+      }
+    }
+  }
+
+  .count-info {
+    .visit-count-wrapper {
+      padding-left: 0 !important;
+
+      .visit-count {
+        padding: .5rem;
+        border-color: #f1f1f1;
+
+        .ant-card-body {
+          padding: .5rem 1rem !important;
+        }
+      }
+    }
+
+    .project-wrapper {
+      padding-right: 0 !important;
+
+      .project-card {
+        border: none !important;
+
+        .ant-card-head {
+          border-left: 1px solid #f1f1f1 !important;
+          border-top: 1px solid #f1f1f1 !important;
+          border-right: 1px solid #f1f1f1 !important;
+        }
+
+        .ant-card-body {
+          padding: 0 !important;
+
+          table {
+            width: 100%;
+
+            td {
+              width: 50%;
+              border: 1px solid #f1f1f1;
+              padding: .6rem;
+
+              .project-avatar-wrapper {
+                display: inline-block;
+                float: left;
+                margin-right: .7rem;
+
+                .project-avatar {
+                  color: #42b983;
+                  background-color: #d6f8b8;
+                }
+              }
+            }
+          }
+        }
+
+        .project-detail {
+          display: inline-block;
+          float: left;
+          text-align: left;
+          width: 78%;
+
+          .project-name {
+            font-size: .9rem;
+            margin-top: -2px;
+            font-weight: 600;
+          }
+
+          .project-desc {
+            color: rgba(0, 0, 0, 0.45);
+
+            p {
+              margin-bottom: 0;
+              font-size: .6rem;
+              white-space: normal;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 </style>

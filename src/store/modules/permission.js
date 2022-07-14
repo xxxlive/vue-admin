@@ -43,11 +43,11 @@ const actions = {
     // 取后台路由
 
     const asyncRouter = await getMenu()
+    console.log(asyncRouter)
 
     return new Promise(resolve => {
       const tmp = asyncRouter.data.permissionList
       const accessedRoutes = filterAsyncRouter(tmp)
-
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
