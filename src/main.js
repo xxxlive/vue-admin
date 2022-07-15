@@ -20,14 +20,16 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import VueApexCharts from 'vue-apexcharts'
 
-Vue.use(ElementUI, { locale })
 Vue.use(Antd)
+Vue.prototype.$antMessage = Vue.prototype.$message
+Vue.prototype.$antConfirm = Vue.prototype.$confirm
+
+Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.hasPerm = hasBtnPermission
 Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
-Vue.prototype.$message = Message
-Vue.prototype.$confirm = MessageBox.confirm
+
 new Vue({
   el: '#app',
   router,
