@@ -111,6 +111,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
 $light_gray:#eee;
+$super_dark_gray:#303030;
 
 /* reset element-ui css */
 .login-container {
@@ -124,7 +125,7 @@ $light_gray:#eee;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: $super_dark_gray;
       height: 47px;
       &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
@@ -144,13 +145,17 @@ $light_gray:#eee;
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 $bg:#2d3a4b;
-$dark_gray:#889aa4;
+$super_dark_gray:#303030;
 $light_gray:#eee;
 .login-container {
   position: fixed;
   height: 100%;
   width: 100%;
   background-color: $bg;
+  background-image: url("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fup.enterdesk.com%2Fedpic%2F42%2F8c%2F25%2F428c2512b5e169185831cf770ac69f4c.jpg&refer=http%3A%2F%2Fup.enterdesk.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1660492462&t=fce059715e19a242c4fb35242e763b8e");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   .login-form {
     position: absolute;
     left: 0;
@@ -172,7 +177,7 @@ $light_gray:#eee;
   }
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $dark_gray;
+    color: $super_dark_gray;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
@@ -180,7 +185,7 @@ $light_gray:#eee;
   .title {
     font-size: 26px;
     font-weight: 400;
-    color: $light_gray;
+    color: $super_dark_gray;
     margin: 0px auto 40px auto;
     text-align: center;
     font-weight: bold;
@@ -190,7 +195,7 @@ $light_gray:#eee;
     right: 10px;
     top: 7px;
     font-size: 16px;
-    color: $dark_gray;
+    color: $super_dark_gray;
     cursor: pointer;
     user-select: none;
   }
