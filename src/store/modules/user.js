@@ -1,8 +1,10 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { updatePassword } from '@/api/acl/user'
 
 const user = {
   state: {
+    id: '',
     token: getToken(),
     name: '',
     avatar: '',
@@ -13,6 +15,9 @@ const user = {
   },
 
   mutations: {
+    SET_ID: (state, id) => {
+      state.id = id
+    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -53,6 +58,16 @@ const user = {
       })
     },
 
+    ResetPassword({ commit }, user) {
+      return new Promise((resolve, reject) => {
+        updatePassword(user).then(response => {
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
     // 获取用户信息
     async GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
@@ -70,6 +85,8 @@ const user = {
             buttonAuthList.push(button)
           })
 
+          console.log(data)
+          commit('SET_ID', data.userId)
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_TEACHERID', data.teacherId)
@@ -100,11 +117,14 @@ const user = {
     // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
-        debugger
+        // debugger
         commit('SET_TOKEN', '')
         removeToken()
         resolve()
       })
+    },
+    updateAvatarById(context, avatar) {
+      context.commit('SET_AVATAR', avatar)
     }
   }
 }

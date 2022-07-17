@@ -1,23 +1,25 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">用户名:{{ name }}</div>
-    <div class="dashboard-text">绑定教师id:{{ teacherId }}</div>
-    <a-row :gutter="8" class="head-info">
+    <a-row :gutter="0" class="head-info">
       <a-card class="head-info-card">
-        <a-col :span="12">
-          <div class="head-info-avatar">
-            <img :src="avatar" alt="头像" style="{width: 50px;height: 50px}">
-          </div>
-          <div class="head-info-count">
-            <div class="head-info-welcome">
-              {{ welcomeMessage }}
-            </div>
-            <div class="head-info-desc">
-              <p>角色：{{ roles === '' ? roles : '超级管理员' }} </p>
-            </div>
-          </div>
+        <a-col :span="4">
+          <img :src="avatar" alt="头像" contain height="150px" width="150px" style="margin-top: 0px; border: #000000 2px; border-radius: 4px">
+          <el-button type="primary" icon="el-icon-upload" style="margin-top: 5px; width: 150px" @click="imagecropperShow=true">更换头像
+          </el-button><div/>
+          <el-button type="primary" icon="el-icon-refresh" style="margin-top: 5px; width: 150px" @click="passwordChangerShow=true">更改密码
+          </el-button>
         </a-col>
-        <a-col :span="12" class="project-wrapper">
+        <a-col :span="10">
+          <section class="comm-title" style="margin-top: 10px">
+            <div >
+              <h4>{{ welcomeMessage }}</h4>
+            </div>
+            <div>
+              角色：{{ roles === '' ? roles : '超级管理员' }}
+            </div>
+          </section>
+        </a-col>
+        <a-col :span="10" class="project-wrapper">
           <a-card title="进行中的项目" class="project-card">
             <a slot="extra" href="https://github.com/xxxlive?tab=repositories" target="_blank">所有项目</a>
             <table>
@@ -45,6 +47,19 @@
                     </div>
                     <div class="project-desc">
                       <p>{{ projects[1].des }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="project-avatar-wrapper">
+                    <a-avatar class="project-avatar">{{ projects[4].avatar }}</a-avatar>
+                  </div>
+                  <div class="project-detail">
+                    <div class="project-name">
+                      {{ projects[4].name }}
+                    </div>
+                    <div class="project-desc">
+                      <p>{{ projects[4].des }}</p>
                     </div>
                   </div>
                 </td>
@@ -76,22 +91,6 @@
                     </div>
                   </div>
                 </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="project-avatar-wrapper">
-                    <a-avatar class="project-avatar">{{ projects[4].avatar }}</a-avatar>
-                  </div>
-                  <div class="project-detail">
-                    <div class="project-name">
-                      {{ projects[4].name }}
-                    </div>
-                    <div class="project-desc">
-                      <p>{{ projects[4].des }}</p>
-                    </div>
-                  </div>
-                </td>
-                <td/>
               </tr>
             </table>
           </a-card>
@@ -184,17 +183,43 @@
         </a-card>
       </div>
     </div>
+    <PasswordChanger
+      v-show="passwordChangerShow"
+      :width="300"
+      :height="300"
+      @close="closePasswordChanger"/>
+
+    <image-cropper
+      v-show="imagecropperShow"
+      :width="300"
+      :height="300"
+      :key="imagecropperKey"
+      :url="BASE_API+'/eduoss/fileoss'"
+      field="file"
+      @close="closeImageCropper"
+      @crop-upload-success="cropSuccess"/>
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import ImageCropper from '../../components/ImageCropper'
+import PasswordChanger from '../../components/PasswordChanger'
 import weather from '../../api/monitor/weather'
+import userApi from '../../api/acl/user'
 
 export default {
   name: 'Dashboard',
+  components: { PasswordChanger, ImageCropper },
   data() {
     return {
+      user: {},
+      passwordChangerShow: false,
+      imagecropperShow: false,
+      imagecropperKey: 0, // 上传组件key值
+      BASE_API: process.env.BASE_API, // 获取dev.env.js里面地址
+      saveBtnDisabled: false, // 保存按钮是否禁用
       projects: [
         {
           name: '东软猪肉订单',
@@ -293,6 +318,7 @@ export default {
     ...mapGetters([
       'name',
       'roles',
+      'id',
       'teacherId',
       'avatar',
       'nickName'
@@ -304,26 +330,56 @@ export default {
     this.searchWeather()
   },
   methods: {
+    closePasswordChanger() {
+      this.passwordChangerShow = false
+    },
+    closeImageCropper() { // 关闭上传弹框的方法
+      this.imagecropperShow = false
+      // 上传组件初始化
+      this.imagecropperKey = this.imagecropperKey + 1
+    },
+    // 上传成功方法
+    cropSuccess(data) {
+      this.imagecropperShow = false
+      // 上传之后接口返回图片地址
+      this.avatar = data.url
+      this.imagecropperKey = this.imagecropperKey + 1
+      userApi.getById(this.id)
+        .then(response => {
+          this.user = response.data.item
+        })
+      this.user.salt = data.url
+      userApi.updateById(this.user)
+        .then(response => { // 修改成功
+          // 提示信息
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          })
+          // 回到dashboard页面 路由跳转
+          this.$router.push({ path: '/dashboard' })
+        })
+    },
     welcome() {
       const date = new Date()
       const hour = date.getHours()
       const time = hour < 6 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour <= 18 ? '下午好' : '晚上好')))
       const welcomeArr = [
-        '手离手机远一些，离键盘近一些，就距离成功……',
-        '喝杯咖啡休息下吧☕',
-        '你变秃了吗?',
-        '要不要和朋友打局LOL手游',
-        '当你的代码量超过5MB的时候，你就会变……|',
+        '手离手机📱远一些，离键盘⌨️近一些，就距离成功近一些',
+        '喝杯咖啡☕️休息下吧',
+        '你变秃🦲了吗?',
+        '要不要和朋友打局LOL手游🎮',
+        '当你的代码量💻超过5MB的时候，你就会变强',
         '今天又写了几个Bug🐞呢',
         '今天在群里吹水了吗',
-        '今天吃了什么好吃的呢',
+        '今天吃了什么好吃🍲的呢',
         '今天您微笑了吗😊',
         '今天帮助别人解决问题了吗',
-        '准备吃些什么呢',
-        '周末要不要去看电影？'
+        '准备吃些什么🍚呢',
+        '周末要不要去看电影🎬？'
       ]
       const index = Math.floor((Math.random() * welcomeArr.length))
-      return time.toString() + this.nickName + welcomeArr[index]
+      return time.toString() + '，' + this.nickName + '。' + welcomeArr[index]
     }, handleSearch(value) {
       this.dataSource = []
       this.storage = []

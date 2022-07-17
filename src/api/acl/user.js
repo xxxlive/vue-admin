@@ -18,6 +18,14 @@ export default {
     })
   },
 
+  updatePassword(user) {
+    return request({
+      url: `${api_name}/updatePassword`,
+      method: 'put',
+      data: user
+    })
+  },
+
   save(user) {
     return request({
       url: `${api_name}/save`,
