@@ -88,7 +88,7 @@ export default {
     init() {
       if (this.$route.params && this.$route.params.id) {
         const id = this.$route.params.id
-        this.fetchDataById(id)      
+        this.fetchDataById(id)
       } else {
         // 对象拓展运算符：拷贝对象，而不是赋值对象的引用
         this.user = { ...defaultForm }
