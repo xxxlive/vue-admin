@@ -1,38 +1,40 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">在线教育网后台管理系统</h3>
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="用户名" />
-      </el-form-item>
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :type="pwdType"
-          v-model="loginForm.password"
-          name="password"
-          auto-complete="on"
-          placeholder="密码"
-          @keyup.enter.native="handleLogin" />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon icon-class="eye" />
-        </span>
-      </el-form-item>
-      <el-form-item>
-        <el-button :loading="loading" type="primary" style="width:100%;" @click="handleLogin">
-          登录
-        </el-button>
-      </el-form-item>
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: 111111</span>
-      </div>
-    </el-form>
+    <div class="login-wrapper">
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+        <h3 class="title">在线教育网后台管理系统</h3>
+        <el-form-item prop="username">
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="用户名"/>
+        </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :type="pwdType"
+            v-model="loginForm.password"
+            name="password"
+            auto-complete="on"
+            placeholder="密码"
+            @keyup.enter.native="handleLogin"/>
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon icon-class="eye" />
+          </span>
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" type="primary" style="width:100%;" @click="handleLogin">
+            登录
+          </el-button>
+        </el-form-item>
+        <div class="tips">
+          <span style="margin-right:20px;">username: admin</span>
+          <span> password: 111111</span>
+        </div>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -111,6 +113,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
 $light_gray:#eee;
+$super_dark_gray:#303030;
 
 /* reset element-ui css */
 .login-container {
@@ -124,11 +127,14 @@ $light_gray:#eee;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: $super_dark_gray;
       height: 47px;
       &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-text-fill-color: #fff !important;
+      }
+      &::placeholder {
+        color: $super_dark_gray;
       }
     }
   }
@@ -144,55 +150,73 @@ $light_gray:#eee;
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 $bg:#2d3a4b;
-$dark_gray:#889aa4;
+$super_dark_gray:#303030;
 $light_gray:#eee;
 .login-container {
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: $bg;
-  .login-form {
+  background-image: url("https://tva1.sinaimg.cn/large/e6c9d24ely1h49sxs9c2dj21h70u07d6.jpg");
+  background-size: cover;
+  background-position: left;
+  background-repeat: no-repeat;
+  .login-wrapper {
     position: absolute;
-    left: 0;
     right: 0;
+    margin: 0 0 0;
+    height: 1000px;
     width: 520px;
-    max-width: 100%;
-    padding: 35px 35px 15px 35px;
-    margin: 120px auto;
-  }
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
-    span {
-      &:first-of-type {
-        margin-right: 16px;
+    background-color: rgba(255,255,255,0.7);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    .login-form {
+      position: absolute;
+      left: 0;
+      right: 0;
+      width: 520px;
+      max-width: 100%;
+      padding: 35px 35px 15px 35px;
+      margin: 40px auto;
+    }
+
+    .tips {
+      font-size: 14px;
+      color: #000;
+      margin-bottom: 10px;
+
+      span {
+        &:first-of-type {
+          margin-right: 16px;
+        }
       }
     }
-  }
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-  .title {
-    font-size: 26px;
-    font-weight: 400;
-    color: $light_gray;
-    margin: 0px auto 40px auto;
-    text-align: center;
-    font-weight: bold;
-  }
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
+
+    .svg-container {
+      padding: 6px 5px 6px 15px;
+      color: $super_dark_gray;
+      vertical-align: middle;
+      width: 30px;
+      display: inline-block;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 400;
+      color: $super_dark_gray;
+      margin: 0px auto 40px auto;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .show-pwd {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      font-size: 16px;
+      color: $super_dark_gray;
+      cursor: pointer;
+      user-select: none;
+    }
   }
 }
 </style>
