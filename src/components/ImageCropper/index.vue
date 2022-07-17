@@ -4,7 +4,7 @@
       <div class="vicp-close" @click="off">
         <i class="vicp-icon4"/>
       </div>
-
+      <h1>更换头像</h1>
       <div v-show="step == 1" class="vicp-step1">
         <div class="vicp-drop-area" @dragleave="preventDefault" @dragover="preventDefault" @dragenter="preventDefault" @click="handleClick" @drop="handleChange">
           <i v-show="loading != 1" class="vicp-icon1">
