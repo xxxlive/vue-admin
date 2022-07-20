@@ -58,7 +58,7 @@
       </el-table-column>
       <el-table-column label="轮播图">
         <template slot-scope="scope">
-          <router-link :to="'/edu/teacher/edit/'+scope.row.id">
+          <router-link :to="'/cms/banner/update/'+scope.row.id">
             <img :src="scope.row.imageUrl" width="100%" hight="100%">
           </router-link>
         </template>
@@ -79,7 +79,6 @@
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
-    </el-table-column>
     </el-table>
 
     <!-- 分页 -->
