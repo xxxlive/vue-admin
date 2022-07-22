@@ -59,8 +59,7 @@
       <el-table-column label="轮播图">
         <template slot-scope="scope">
           <router-link :to="'/cms/banner/update/'+scope.row.id">
-            <img :src="scope.row.imageUrl" width="100%" hight="100%">
-          </router-link>
+          <video :src="scope.row.imageUrl+'#t=2'" width="100%" height="100%"/></router-link>
         </template>
       </el-table-column>
 

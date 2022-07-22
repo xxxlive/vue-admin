@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-wrapper">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-        <h3 class="title">在线教育网后台管理系统</h3>
+        <h3 class="title">鸿濛5G后台首页</h3>
         <el-form-item prop="username">
           <span class="svg-container">
             <svg-icon icon-class="user" />

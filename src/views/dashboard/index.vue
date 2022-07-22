@@ -340,24 +340,25 @@ export default {
     },
     // 上传成功方法
     cropSuccess(data) {
+      console.log(data)
       this.imagecropperShow = false
       // 上传之后接口返回图片地址
       this.avatar = data.url
       this.imagecropperKey = this.imagecropperKey + 1
+
       userApi.getById(this.id)
         .then(response => {
           this.user = response.data.item
-        })
-      this.user.salt = data.url
-      userApi.updateById(this.user)
-        .then(response => { // 修改成功
-          // 提示信息
-          this.$message({
-            type: 'success',
-            message: '修改成功!'
-          })
-          // 回到dashboard页面 路由跳转
-          this.$router.push({ path: '/dashboard' })
+          this.user.salt = data.url
+          userApi.updateById(this.user)
+            .then(response => { // 修改成功
+              // 提示信息
+              this.$message({
+                type: 'success',
+                message: '修改成功!'
+              })
+              location.reload()
+            })
         })
     },
     welcome() {

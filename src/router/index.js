@@ -34,7 +34,7 @@ export const constantRoutes = [
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '在线教育网后台首页', icon: 'dashboard' }
+      meta: { title: '鸿濛5G后台首页', icon: 'dashboard' }
     }]
   }]
 /**

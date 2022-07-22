@@ -99,10 +99,8 @@ export default {
           this.total = response.data.total
           // 数据加载并绑定成功
           this.listLoading = false
-          console.log(response)
         }
       )
-
     },
 
     // 重置查询表单

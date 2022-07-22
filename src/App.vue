@@ -26,7 +26,7 @@ export default {
       style: '',
       width: 500,
       height: 500,
-      size: 350
+      size: 250
     }
   }
 
@@ -35,12 +35,17 @@ export default {
 
 <style>
 .live2d-container {
+  width: 20px;
   opacity: 0;
   position: fixed;
   bottom: 0;
   right: 0;
 }
 .live2d-container:hover {
+  width: unset;
   opacity: 1;
+  position: fixed;
+  bottom: 0;
+  right: 0;
 }
 </style>
